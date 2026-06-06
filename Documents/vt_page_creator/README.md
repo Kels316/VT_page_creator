@@ -1,6 +1,6 @@
 # VT Page Creator
 
-Generate a print-ready A4 PDF containing **4 cards** (each 98 × 125 mm) laid out in a 2 × 2 grid from a simple Markdown file. Cut along the guides to get four identical-sized cards.
+Generate a print-ready A4 PDF containing **4 cards** (each 98 × 125 mm) laid out in a 2 × 2 grid from a Markdown file. Content flows automatically across cards — no manual separators needed. Cut along the guides to get four identical-sized cards.
 
 ---
 
@@ -8,41 +8,40 @@ Generate a print-ready A4 PDF containing **4 cards** (each 98 × 125 mm) laid ou
 
 ### 1. Install dependencies
 
-```bash
+```
 pip install reportlab markdown
 ```
 
-### 2. Edit your content
+### 2. Write your content
 
-Open `segments.md` and fill in your four sections, separated by `---`:
+Create any Markdown file. The script automatically flows the text across cards — if your content fills 3 cards, it uses 3 cards; if it fills more than 4, it generates additional A4 pages.
 
 ```markdown
 # Card Title
-**Label:** Value
+
 Some body text here.
 
 - Bullet one
 - Bullet two
 
----
+## Subheading
 
-# Second Card
-...
+More content that will flow naturally into the next card when this one is full.
 ```
 
-Each section between `---` dividers becomes one card. You can use:
+Supported Markdown:
 
-| Markdown | Result |
-|---|---|
-| `# Heading` | Large bold title |
-| `## Subheading` | Smaller bold heading |
-| `- item` or `* item` | Bullet point |
-| `**text**` | Bold |
-| `*text*` | Italic |
+| Markdown             | Result               |
+| -------------------- | -------------------- |
+| `# Heading`          | Large bold title     |
+| `## Subheading`      | Smaller bold heading |
+| `- item` or `* item` | Bullet point         |
+| `**text**`           | Bold                 |
+| `*text*`             | Italic               |
 
 ### 3. Generate the PDF
 
-```bash
+```
 python3 generate_cards.py
 ```
 
@@ -56,17 +55,17 @@ This produces `cards.pdf` — ready to print on A4 and cut.
 python3 generate_cards.py [--input FILE] [--output FILE] [--no-cutlines]
 ```
 
-| Flag | Default | Description |
-|---|---|---|
-| `--input` | `segments.md` | Path to your Markdown file |
-| `--output` | `cards.pdf` | Path for the output PDF |
-| `--no-cutlines` | off | Omit the grey borders and crop marks |
+| Flag            | Default       | Description                          |
+| --------------- | ------------- | ------------------------------------ |
+| `--input`       | `segments.md` | Path to your Markdown file           |
+| `--output`      | `cards.pdf`   | Path for the output PDF              |
+| `--no-cutlines` | off           | Omit the grey borders and crop marks |
 
 **Examples:**
 
-```bash
+```
 # Custom file names
-python3 generate_cards.py --input my_labels.md --output labels.pdf
+python3 generate_cards.py --input my_content.md --output labels.pdf
 
 # No cut guides (e.g. for borderless printing)
 python3 generate_cards.py --no-cutlines
@@ -89,18 +88,16 @@ python3 generate_cards.py --no-cutlines
 └─────────────────────────┘
 ```
 
-The grid is centred on the page. Crop marks appear at the outer corners and between cards so you can cut accurately.
-
-If fewer than 4 segments are defined in your Markdown file, the remaining card slots will be left blank. If more than 4 are defined, only the first 4 are used.
+Content flows left-to-right, top-to-bottom. If your content exceeds 4 cards, additional A4 pages are generated with the same layout.
 
 ---
 
 ## Files
 
-| File | Purpose |
-|---|---|
-| `generate_cards.py` | Main script |
-| `segments.md` | Template content file — edit this |
+| File                | Purpose                                    |
+| ------------------- | ------------------------------------------ |
+| `generate_cards.py` | Main script                                |
+| `segments.md`       | Example content file — replace or point `--input` at your own |
 
 ---
 
