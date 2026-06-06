@@ -88,6 +88,10 @@ def find_tool(name, extra_paths=None):
 
 
 def generate(input_md: str, output_pdf: str, draw_cutlines: bool = True):
+    pandoc_paths = [
+        "/opt/homebrew/bin/pandoc",
+        "/usr/local/bin/pandoc",
+    ]
     tex_paths = [
         "/Library/TeX/texbin/pdflatex",
         "/usr/local/texlive/2024/bin/universal-darwin/pdflatex",
@@ -99,8 +103,14 @@ def generate(input_md: str, output_pdf: str, draw_cutlines: bool = True):
         "/usr/local/texlive/2023/bin/universal-darwin/pdfjam",
     ]
 
+    pandoc   = find_tool("pandoc",   pandoc_paths)
     pdflatex = find_tool("pdflatex", tex_paths)
     pdfjam   = find_tool("pdfjam",   jam_paths)
+
+    if not pandoc:
+        print("Error: pandoc not found. Install with: brew install pandoc",
+              file=sys.stderr)
+        sys.exit(1)
 
     if not pdflatex:
         print("Error: pdflatex not found. Install MacTeX from https://tug.org/mactex/",
@@ -115,7 +125,7 @@ def generate(input_md: str, output_pdf: str, draw_cutlines: bool = True):
     # Step 1: Pandoc markdown → LaTeX body
     # ------------------------------------------------------------------ #
     result = subprocess.run(
-        ["pandoc", "--from=markdown+task_lists+smart", "--to=latex", input_md],
+        [pandoc, "--from=markdown+task_lists+smart", "--to=latex", input_md],
         capture_output=True, text=True
     )
     if result.returncode != 0:
