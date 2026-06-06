@@ -171,17 +171,20 @@ def generate(input_md: str, output_pdf: str, draw_cutlines: bool = True):
         # ------------------------------------------------------------------ #
         # 2×98mm = 196mm, 2×125mm = 250mm — fits A4 with 7mm side margins
         # and 23.5mm top/bottom margins when noautoscale is set.
+        # Give pdfjam a PATH that includes the TeX binaries
+        tex_env = os.environ.copy()
+        tex_env["PATH"] = os.path.dirname(pdflatex) + ":" + tex_env.get("PATH", "")
+
         frame_opts = ["--frame", "true"] if draw_cutlines else []
         result = subprocess.run(
             [pdfjam,
-             "--pdflatex",     pdflatex,
              "--nup",          "2x2",
              "--paper",        "a4paper",
              "--noautoscale",  "true",
              *frame_opts,
              "--outfile",      output_pdf,
              tmp_pdf],
-            capture_output=True, text=True
+            capture_output=True, text=True, env=tex_env
         )
         if result.returncode != 0:
             print(f"pdfjam error:\n{result.stderr}", file=sys.stderr)
