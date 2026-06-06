@@ -174,6 +174,7 @@ def generate(input_md: str, output_pdf: str, draw_cutlines: bool = True):
         frame_opts = ["--frame", "true"] if draw_cutlines else []
         result = subprocess.run(
             [pdfjam,
+             "--pdflatex",     pdflatex,
              "--nup",          "2x2",
              "--paper",        "a4paper",
              "--noautoscale",  "true",
